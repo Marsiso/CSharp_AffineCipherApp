@@ -37,8 +37,8 @@ namespace AffineCipherApp
 
             AffineCipher.BuildEncryptionDictionary(A, B, (int)M);
             txtBoxOut.Text = String.CompareOrdinal(labelOutput.Text, s2) == 0
-                ? AffineCipher.FormatTextAndEncrypt(txtBoxIn.Text)
-                : AffineCipher.FormatTextAndDecrypt(txtBoxIn.Text);
+                ? AffineCipher.FormatAndEncryptOpenText(txtBoxIn.Text)
+                : AffineCipher.FormatAndDecryptCipher(txtBoxIn.Text);
             BuildSubstitutionTable();
             BuildFilterTable();
         }
@@ -54,8 +54,8 @@ namespace AffineCipherApp
 
             AffineCipher.BuildDecryptionDictionary(A, B, (int)M);
             txtBoxOut.Text = String.CompareOrdinal(labelOutput.Text, s1) == 0
-                ? AffineCipher.FormatTextAndEncrypt(txtBoxIn.Text)
-                : AffineCipher.FormatTextAndDecrypt(txtBoxIn.Text);
+                ? AffineCipher.FormatAndEncryptOpenText(txtBoxIn.Text)
+                : AffineCipher.FormatAndDecryptCipher(txtBoxIn.Text);
             BuildSubstitutionTable();
             BuildFilterTable();
         }
@@ -105,12 +105,12 @@ namespace AffineCipherApp
             if (String.CompareOrdinal(labelInput.Text, s) == 0)
             {
                 AffineCipher.BuildDecryptionDictionary(A, B, (int)M);
-                txtBoxOut.Text = AffineCipher.FormatTextAndDecrypt(txtBoxIn.Text);
+                txtBoxOut.Text = AffineCipher.FormatAndDecryptCipher(txtBoxIn.Text);
             }
             else
             {
                 AffineCipher.BuildEncryptionDictionary(A, B, (int)M);
-                txtBoxOut.Text = AffineCipher.FormatTextAndEncrypt(txtBoxIn.Text);
+                txtBoxOut.Text = AffineCipher.FormatAndEncryptOpenText(txtBoxIn.Text);
             }
 
             if (txtBoxIn.ReadOnly)
@@ -217,8 +217,8 @@ namespace AffineCipherApp
             const string s = "Cypher";
 
             txtBoxOut.Text = String.CompareOrdinal(labelOutput.Text, s) == 0
-                ? AffineCipher.FormatTextAndEncrypt(txtBoxIn.Text)
-                : AffineCipher.FormatTextAndDecrypt(txtBoxIn.Text);
+                ? AffineCipher.FormatAndEncryptOpenText(txtBoxIn.Text)
+                : AffineCipher.FormatAndDecryptCipher(txtBoxIn.Text);
         }
 
         private void btnTables_Click(object sender, EventArgs e)
@@ -252,7 +252,7 @@ namespace AffineCipherApp
             if (String.CompareOrdinal(labelOutput.Text, s) == 0)
             {
                 row = new ListViewItem("(whitespace)");
-                row.SubItems.Add(new ListViewItem.ListViewSubItem(row, AffineCipher.FormatTextAndEncrypt("XMEZERAX")));
+                row.SubItems.Add(new ListViewItem.ListViewSubItem(row, AffineCipher.FormatAndEncryptOpenText("XMEZERAX")));
                 listViewSubstitution.Items.Add(row);
             }
 

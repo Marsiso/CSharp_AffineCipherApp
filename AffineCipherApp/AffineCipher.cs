@@ -4,15 +4,44 @@ using System.Text;
 
 namespace AffineCipherApp
 {
+    /// <summary>
+    /// Static class providing methods and dictionaries for encrypting/decrypting using affine cipher.
+    /// </summary>
     internal static class AffineCipher
     {
+        /// <summary>
+        /// Dictionary holding indexed characters ranging from letter A to Z.
+        /// </summary>
         internal static readonly Dictionary<char, int> StdAlphabet;
+
+        /// <summary>
+        /// Dictionary holding indexed characters ranging from letter A to Z plus integers ranging from 0 to 9.
+        /// </summary>
         internal static readonly Dictionary<char, int> ExtAlphabet;
+
+        /// <summary>
+        /// Inversion of keys and values of extended alphabet.
+        /// </summary>
         internal static readonly Dictionary<int, char> InvAlphabet;
+
+        /// <summary>
+        /// Dictionary holding allowed characters and their projections used to filter user's input.
+        /// </summary>
         internal static readonly Dictionary<char, char> ConversionDictionary;
+
+        /// <summary>
+        /// Dictionary holding chosen alphabets projections and theirs encrypted/decrypted characters used to encrypt/decrypt user's input.
+        /// </summary>
         internal static Dictionary<char, char> AffineCipherDictionary;
+
+        /// <summary>
+        /// Holds and copy of an chosen alphabet's instance.
+        /// </summary>
         private static Dictionary<char, int> _instance;
 
+        /// <summary>
+        /// Initializes core components before first usage needed for class to function properly.
+        /// </summary>
         static AffineCipher()
         {
             StdAlphabet = new Dictionary<char, int>
@@ -180,6 +209,9 @@ namespace AffineCipherApp
             Instance = StdAlphabet;
         }
 
+        /// <summary>
+        /// Gets or sets chosen alphabet to be used.
+        /// </summary>
         internal static Dictionary<char, int> Instance
         {
             get => _instance;
@@ -192,7 +224,12 @@ namespace AffineCipherApp
             }
         }
 
-        internal static string FormatTextAndDecrypt(in string input)
+        /// <summary>
+        /// Formats users input using conversion dictionary and decrypts its content using separate dictionary for decryption.
+        /// </summary>
+        /// <param name="input">Users input in form of string to be decrypted.</param>
+        /// <returns>Decrypted and formatted input in form of string.</returns>
+        internal static string FormatAndDecryptCipher(in string input)
         {
             var decrypted = new StringBuilder(capacity: 2000);
             foreach (var c in input)
@@ -210,7 +247,12 @@ namespace AffineCipherApp
             return output;
         }
 
-        internal static string FormatTextAndEncrypt(in string input)
+        /// <summary>
+        /// Formats users input using conversion dictionary and encrypts its content using separate dictionary for encryption.
+        /// </summary>
+        /// <param name="input">Users input in form of string to be encrypted.</param>
+        /// <returns>Encrypted and formatted input in form of string.</returns>
+        internal static string FormatAndEncryptOpenText(in string input)
         {
             var encrypted = new StringBuilder(capacity: 2000);
             foreach (var c in input)
@@ -241,6 +283,12 @@ namespace AffineCipherApp
             return output;
         }
 
+        /// <summary>
+        /// Builds dictionary used for an encryption of users input based on given parameters.
+        /// </summary>
+        /// <param name="a">Ax + b mod m</param>
+        /// <param name="b">ax + B mod m</param>
+        /// <param name="m">ax + b mod M. GCD(a, m) must equal 1!!.</param>
         internal static void BuildEncryptionDictionary(int a, int b, int m)
         {
             AffineCipherDictionary = new Dictionary<char, char>();
@@ -250,18 +298,15 @@ namespace AffineCipherApp
             }
 
             if (!ReferenceEquals(Instance, StdAlphabet)) return;
-            AffineCipherDictionary.Add('0', '0');
-            AffineCipherDictionary.Add('1', '1');
-            AffineCipherDictionary.Add('2', '2');
-            AffineCipherDictionary.Add('3', '3');
-            AffineCipherDictionary.Add('4', '4');
-            AffineCipherDictionary.Add('5', '5');
-            AffineCipherDictionary.Add('6', '6');
-            AffineCipherDictionary.Add('7', '7');
-            AffineCipherDictionary.Add('8', '8');
-            AffineCipherDictionary.Add('9', '9');
+            AddNumbersAsChars();
         }
 
+        /// <summary>
+        /// Builds dictionary used for an decryption of users input based on given parameters.
+        /// </summary>
+        /// <param name="a">Ax + b mod m</param>
+        /// <param name="b">ax + B mod m</param>
+        /// <param name="m">ax + b mod M. GCD(a, m) = 1</param>
         internal static void BuildDecryptionDictionary(int a, int b, int m)
         {
             AffineCipherDictionary = new Dictionary<char, char>();
@@ -270,6 +315,14 @@ namespace AffineCipherApp
                 AffineCipherDictionary.Add(Letters.Key, InvAlphabet[DecryptionMechanism(Letters.Value, ref a, ref b, ref m)]);
             }
             if (!ReferenceEquals(Instance, StdAlphabet)) return;
+            AddNumbersAsChars();
+        }
+
+        /// <summary>
+        /// Adds integers as chars ranging from 0 to 9 to an existing dictionary used for an encryption/decryption. Used together with standard alphabet.
+        /// </summary>
+        private static void AddNumbersAsChars()
+        {
             AffineCipherDictionary.Add('0', '0');
             AffineCipherDictionary.Add('1', '1');
             AffineCipherDictionary.Add('2', '2');
@@ -282,14 +335,27 @@ namespace AffineCipherApp
             AffineCipherDictionary.Add('9', '9');
         }
 
+        /// <summary>
+        /// Encrypts users input using affine cipher principles.
+        /// </summary>
+        /// <param name="input">Users input in form of an index of a char to be encrypted.</param>
+        /// <param name="a">Ax + b mod m</param>
+        /// <param name="b">ax + B mod m</param>
+        /// <param name="m">ax + b mod M. GCD(a, m) = 1</param>
+        /// <returns>Encrypted characters index to be used to instantiate encryption dictionary.</returns>
         private static int EncryptionMechanism(in int input, ref int a, ref int b, ref int m)
         {
             int encryptedVal = a * input + Mod(ref b, ref m);
             if (encryptedVal < m) return encryptedVal;
-            encryptedVal %= m;
-            return encryptedVal;
+            return encryptedVal % m;
         }
 
+        /// <summary>
+        /// Method providing math's modulo function implementation.
+        /// </summary>
+        /// <param name="left">Left operand of modulo.(dividend)</param>
+        /// <param name="right">Right operand of modulo (divisor)</param>
+        /// <returns>Reminder of number's division by divisor.</returns>
         private static int Mod(ref int left, ref int right)
         {
             int result = left % right;
@@ -298,15 +364,29 @@ namespace AffineCipherApp
                 : result;
         }
 
+        /// <summary>
+        /// Decrypts users input using affine cipher principles.
+        /// </summary>
+        /// <param name="input">Users input in form of an index of a char to be decrypted.</param>
+        /// <param name="a">Ax + b mod m</param>
+        /// <param name="b">ax + B mod m</param>
+        /// <param name="m">ax + b mod M. GCD(a, m) = 1</param>
+        /// <returns>Decrypted characters index to be used to instantiate decryption dictionary.</returns>
         private static int DecryptionMechanism(in int input, ref int a, ref int b, ref int m)
         {
             int temp = (input - b) * ModInverse(a, m);
             return Mod(ref temp, ref m);
         }
 
+        /// <summary>
+        /// Implementation of math's inverse module.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns>Module's inversion.</returns>
         private static int ModInverse(int left, int right)
         {
-            int m0 = right;
+            int rightOriginal = right;
             int y = 0, x = 1;
 
             if (right == 1)
@@ -326,7 +406,7 @@ namespace AffineCipherApp
             }
 
             if (x < 0)
-                x += m0;
+                x += rightOriginal;
 
             return x;
         }
