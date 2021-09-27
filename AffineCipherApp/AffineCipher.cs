@@ -189,20 +189,35 @@ namespace AffineCipherApp
                 {'7', '7'},
                 {'8', '8'},
                 {'9', '9'},
+                {'á', 'A'},
                 {'Á', 'A'},
+                {'č', 'C'},
                 {'Č', 'C'},
+                {'ď', 'D'},
                 {'Ď', 'D'},
+                {'é', 'E'},
                 {'É', 'E'},
+                {'ě', 'E'},
                 {'Ě', 'E'},
+                {'í', 'I'},
                 {'Í', 'I'},
+                {'ň', 'N'},
                 {'Ň', 'N'},
+                {'ó', 'O'},
                 {'Ó', 'O'},
+                {'ř', 'R'},
                 {'Ř', 'R'},
+                {'š', 'S'},
                 {'Š', 'S'},
+                {'ť', 'T'},
                 {'Ť', 'T'},
+                {'ú', 'U'},
                 {'Ú', 'U'},
+                {'ů', 'U'},
                 {'Ů', 'U'},
+                {'ý', 'Y'},
                 {'Ý', 'Y'},
+                {'ž', 'Z'},
                 {'Ž', 'Z'}
             };
             AffineCipherDictionary = null;
@@ -234,9 +249,8 @@ namespace AffineCipherApp
             var decrypted = new StringBuilder(capacity: 2000);
             foreach (var c in input)
             {
-                //TODO remove char.toupper
                 if (Char.IsWhiteSpace(c)) continue;
-                if (ConversionDictionary.TryGetValue(Char.ToUpper(c), out char newValue))
+                if (ConversionDictionary.TryGetValue(c, out char newValue))
                 {
                     decrypted.Append(AffineCipherDictionary[newValue]);
                 }
@@ -257,22 +271,14 @@ namespace AffineCipherApp
             var encrypted = new StringBuilder(capacity: 2000);
             foreach (var c in input)
             {
-                //TODO remove char.toupper
-                if (ConversionDictionary.TryGetValue(Char.ToUpper(c), out char newValue))
+                if (ConversionDictionary.TryGetValue(c, out char newValue))
                 {
                     encrypted.Append(AffineCipherDictionary[newValue]);
                     continue;
                 }
 
                 if (!Char.IsWhiteSpace(c)) continue;
-                encrypted.Append(AffineCipherDictionary['X']);
-                encrypted.Append(AffineCipherDictionary['M']);
-                encrypted.Append(AffineCipherDictionary['E']);
-                encrypted.Append(AffineCipherDictionary['Z']);
-                encrypted.Append(AffineCipherDictionary['E']);
-                encrypted.Append(AffineCipherDictionary['R']);
-                encrypted.Append(AffineCipherDictionary['A']);
-                encrypted.Append(AffineCipherDictionary['X']);
+                AppendEncryptedWhiteSpace(ref encrypted);
             }
             //TODO optimeze with readonlyspan
             string output = encrypted.ToString();
@@ -316,6 +322,22 @@ namespace AffineCipherApp
             }
             if (!ReferenceEquals(Instance, StdAlphabet)) return;
             AddNumbersAsChars();
+        }
+
+        /// <summary>
+        /// Appends encrypted whitespace char to an already existent cipher.
+        /// </summary>
+        /// <param name="encrypted">Encrypted char whitespace</param>
+        private static void AppendEncryptedWhiteSpace(ref StringBuilder encrypted)
+        {
+            encrypted.Append(AffineCipherDictionary['X']);
+            encrypted.Append(AffineCipherDictionary['M']);
+            encrypted.Append(AffineCipherDictionary['E']);
+            encrypted.Append(AffineCipherDictionary['Z']);
+            encrypted.Append(AffineCipherDictionary['E']);
+            encrypted.Append(AffineCipherDictionary['R']);
+            encrypted.Append(AffineCipherDictionary['A']);
+            encrypted.Append(AffineCipherDictionary['X']);
         }
 
         /// <summary>
