@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AffineCipherApp
 {
     public partial class BasicView : Form
     {
+        /// <summary>
+        /// Instantiate class and set defaults for components, fields and methods.
+        /// </summary>
         public BasicView()
         {
             InitializeComponent();
-            A = 5;
-            B = 9;
-            M = 26;
             AffineCipher.BuildEncryptionDictionary(A, B, (int)M);
             listViewSubstitution.Columns.Add("Input Letter", 128, HorizontalAlignment.Left);
             listViewSubstitution.Columns.Add("Output Letter", 128, HorizontalAlignment.Left);
@@ -22,11 +23,27 @@ namespace AffineCipherApp
             BuildFilterTable();
         }
 
-        internal int A { get; private set; }
-        internal int B { get; private set; }
-        internal uint M { get; private set; }
+        /// <summary>
+        /// Parameter used in a formula ax + b mod m to encrypt/decrypt users input.
+        /// </summary>
+        internal int A { get; private set; } = 5;
+
+        /// <summary>
+        /// Parameter used in a formula ax + b mod m to encrypt/decrypt users input.
+        /// </summary>
+        internal int B { get; private set; } = 9;
+
+        /// <summary>
+        /// Parameter representing modulo used in a formula ax + b mod m to encrypt/decrypt users input.
+        /// </summary>
+        internal uint M { get; private set; } = 26;
 
         //TODO move build dictionary to an eventhandler
+        /// <summary>
+        /// Procedure which is initiated when button pressed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnEncrypt_Click(object sender, EventArgs e)
         {
             const string s1 = "Open Text";
@@ -34,16 +51,15 @@ namespace AffineCipherApp
             if (String.CompareOrdinal(labelInput.Text, s1) == 0) return;
             labelInput.Text = s1;
             labelOutput.Text = s2;
-
-            AffineCipher.BuildEncryptionDictionary(A, B, (int)M);
-            txtBoxOut.Text = String.CompareOrdinal(labelOutput.Text, s2) == 0
-                ? AffineCipher.FormatAndEncryptOpenText(txtBoxIn.Text)
-                : AffineCipher.FormatAndDecryptCipher(txtBoxIn.Text);
-            BuildSubstitutionTable();
-            BuildFilterTable();
+            RebuildEncryptionDictionary();
         }
 
         //TODO move build dictionary to an eventhandler
+        /// <summary>
+        /// Procedure which is initiated when button pressed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnDecrypt_Click(object sender, EventArgs e)
         {
             const string s1 = "Cypher";
@@ -51,24 +67,31 @@ namespace AffineCipherApp
             if (String.CompareOrdinal(labelInput.Text, s1) == 0) return;
             labelInput.Text = s1;
             labelOutput.Text = s2;
-
-            AffineCipher.BuildDecryptionDictionary(A, B, (int)M);
-            txtBoxOut.Text = String.CompareOrdinal(labelOutput.Text, s1) == 0
-                ? AffineCipher.FormatAndEncryptOpenText(txtBoxIn.Text)
-                : AffineCipher.FormatAndDecryptCipher(txtBoxIn.Text);
-            BuildSubstitutionTable();
-            BuildFilterTable();
+            RebuildDecryptionDictionary();
         }
 
-        private void buttonOptions_Click(object sender, EventArgs e)
+        private void RebuildEncryptionDictionary()
         {
-            btnOptions_Click();
+            AffineCipher.BuildEncryptionDictionary(A, B, (int)M);
+            BuildSubstitutionTable();
+            BuildFilterTable();
+            AffineCipher.FormatAndEncryptOpenText(txtBoxIn.Text);
+        }
+
+        private void RebuildDecryptionDictionary()
+        {
+            AffineCipher.BuildDecryptionDictionary(A, B, (int)M);
+            BuildSubstitutionTable();
+            BuildFilterTable();
+            AffineCipher.FormatAndDecryptCipher(txtBoxIn.Text);
         }
 
         /// <summary>
-        /// Hide or display components of option's sub-panel.
+        /// Hides/Displays components of options su-panel and a procedure which is initiated when button pressed.
         /// </summary>
-        private void btnOptions_Click()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnOptions_Click(object sender, EventArgs e)
         {
             if (subPanelTables.Visible && !subPanelOpt.Visible)
             {

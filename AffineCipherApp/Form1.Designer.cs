@@ -419,7 +419,7 @@ namespace AffineCipherApp
             this.btnOptions.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnOptions.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnOptions.UseVisualStyleBackColor = false;
-            this.btnOptions.Click += new System.EventHandler(this.buttonOptions_Click);
+            this.btnOptions.Click += new System.EventHandler(this.btnOptions_Click);
             // 
             // btnDecrypt
             // 
