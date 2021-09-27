@@ -280,13 +280,12 @@ namespace AffineCipherApp
                 if (!Char.IsWhiteSpace(c)) continue;
                 AppendEncryptedWhiteSpace(ref encrypted);
             }
-            //TODO optimeze with readonlyspan
-            string output = encrypted.ToString();
-            for (int i = 5; i < output.Length; i += 6)
+            for (int i = 5; i < encrypted.Length; i += 6)
             {
-                output = output.Insert(i, " ");
+                encrypted.Insert(i, " ");
             }
-            return output;
+
+            return encrypted.ToString(); ;
         }
 
         /// <summary>
