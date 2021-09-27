@@ -38,7 +38,6 @@ namespace AffineCipherApp
         /// </summary>
         internal uint M { get; private set; } = 26;
 
-        //TODO move build dictionary to an eventhandler
         /// <summary>
         /// Procedure which is initiated when button pressed.
         /// </summary>
@@ -54,7 +53,6 @@ namespace AffineCipherApp
             RebuildEncryptionDictionary();
         }
 
-        //TODO move build dictionary to an eventhandler
         /// <summary>
         /// Procedure which is initiated when button pressed.
         /// </summary>
@@ -70,6 +68,9 @@ namespace AffineCipherApp
             RebuildDecryptionDictionary();
         }
 
+        /// <summary>
+        /// Rebuilds encryption dictionary used to encrypt open text.
+        /// </summary>
         private void RebuildEncryptionDictionary()
         {
             AffineCipher.BuildEncryptionDictionary(A, B, (int)M);
@@ -78,6 +79,9 @@ namespace AffineCipherApp
             AffineCipher.FormatAndEncryptOpenText(txtBoxIn.Text);
         }
 
+        /// <summary>
+        /// Rebuilds decryption dictionary used to decrypt cipher.
+        /// </summary>
         private void RebuildDecryptionDictionary()
         {
             AffineCipher.BuildDecryptionDictionary(A, B, (int)M);
@@ -114,17 +118,13 @@ namespace AffineCipherApp
         private void buttonSave_Click(object sender, EventArgs e)
         {
             const string invalidValue = @"?";
-            if (String.CompareOrdinal(txtBoxVarM.Text, invalidValue) == 0)
-            {
-                return;
-            }
-            if (System.Numerics.BigInteger.GreatestCommonDivisor(A, M) != 1)
+            if (String.CompareOrdinal(txtBoxVarM.Text, invalidValue) == 0 ||
+                System.Numerics.BigInteger.GreatestCommonDivisor(A, M) != 1)
             {
                 return;
             }
 
             const string s = "Cypher";
-
             if (String.CompareOrdinal(labelInput.Text, s) == 0)
             {
                 AffineCipher.BuildDecryptionDictionary(A, B, (int)M);
@@ -136,11 +136,7 @@ namespace AffineCipherApp
                 txtBoxOut.Text = AffineCipher.FormatAndEncryptOpenText(txtBoxIn.Text);
             }
 
-            if (txtBoxIn.ReadOnly)
-            {
-                txtBoxIn.ReadOnly = false;
-            }
-
+            if (txtBoxIn.ReadOnly) txtBoxIn.ReadOnly = false;
             BuildSubstitutionTable();
             BuildFilterTable();
         }
@@ -153,27 +149,29 @@ namespace AffineCipherApp
         /// <param name="e"></param>
         private void checkBoxStdExtAlphabet_CheckedChanged(object sender, EventArgs e)
         {
+            // Lock input text box
             if (!txtBoxIn.ReadOnly)
             {
                 txtBoxIn.ReadOnly = true;
             }
-            if (checkBoxStdAplhabet.Checked && checkBoxExtAplhabet.Checked || !checkBoxStdAplhabet.Checked && !checkBoxExtAplhabet.Checked)
+            // Check if both or none alphabet is checked/chosen
+            const string invalidValue = @"?";
+            if (checkBoxStdAplhabet.Checked && checkBoxExtAplhabet.Checked ||
+                !checkBoxStdAplhabet.Checked && !checkBoxExtAplhabet.Checked)
             {
-                txtBoxVarM.Text = @"?";
+                txtBoxVarM.Text = invalidValue;
                 return;
             }
-
+            // Set value to variable m and its GUI components
             txtBoxVarM.Text = checkBoxStdAplhabet.Checked
                 ? "26"
                 : "36";
-
             const uint mStd = 26;
             const uint mExt = 36;
-
             M = checkBoxStdAplhabet.Checked
                 ? mStd
                 : mExt;
-
+            // Switch alphabet
             AffineCipher.Instance = checkBoxStdAplhabet.Checked
                 ? AffineCipher.StdAlphabet
                 : AffineCipher.ExtAlphabet;
@@ -187,16 +185,19 @@ namespace AffineCipherApp
         /// <param name="e"></param>
         private void txtBoxVarA_TextChanged(object sender, EventArgs e)
         {
+            // Lock text box
             if (!txtBoxIn.ReadOnly)
             {
                 txtBoxIn.ReadOnly = true;
             }
+            // Char '-' equals zero as number
             const string allowedString = @"-";
             if (String.CompareOrdinal(txtBoxVarA.Text, allowedString) == 0)
             {
                 A = 0;
                 return;
             }
+            // Try set new value to an variable
             if (int.TryParse(txtBoxVarA.Text, out int a))
             {
                 A = a;
@@ -215,16 +216,19 @@ namespace AffineCipherApp
         /// <param name="e"></param>
         private void textBoxVarB_TextChanged(object sender, EventArgs e)
         {
+            // Lock text box
             if (!txtBoxIn.ReadOnly)
             {
                 txtBoxIn.ReadOnly = true;
             }
+            // Char '-' equals zero as number
             const string allowedString = @"-";
             if (String.CompareOrdinal(txtBoxVarB.Text, allowedString) == 0)
             {
                 B = 0;
                 return;
             }
+            // Try set new value to an variable
             if (int.TryParse(txtBoxVarB.Text, out int b))
             {
                 B = b;
@@ -235,6 +239,11 @@ namespace AffineCipherApp
             }
         }
 
+        /// <summary>
+        /// Re-encrypt/decrypt users input upon its value change.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtBoxIn_TextChanged(object sender, EventArgs e)
         {
             const string s = "Cypher";
@@ -244,6 +253,11 @@ namespace AffineCipherApp
                 : AffineCipher.FormatAndDecryptCipher(txtBoxIn.Text);
         }
 
+        /// <summary>
+        /// Hide/Display components contained in button table's sub-panel.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnTables_Click(object sender, EventArgs e)
         {
             if (subPanelOpt.Visible && !subPanelTables.Visible)
@@ -259,6 +273,9 @@ namespace AffineCipherApp
             listViewFilter.Visible = isVisible;
         }
 
+        /// <summary>
+        /// Builds table used to display substitutions used for char's conversion during encryption/decryption.
+        /// </summary>
         private void BuildSubstitutionTable()
         {
             listViewSubstitution.Items.Clear();
@@ -284,6 +301,9 @@ namespace AffineCipherApp
             listViewSubstitution.Items.Add(row);
         }
 
+        /// <summary>
+        /// Builds table used to display filter used for char's conversion during user's input filtration.
+        /// </summary>
         private void BuildFilterTable()
         {
             listViewFilter.Items.Clear();
