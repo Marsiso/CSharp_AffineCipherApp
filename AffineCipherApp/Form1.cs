@@ -21,6 +21,8 @@ namespace AffineCipherApp
             listViewFilter.Columns.Add("Output Letter", 128, HorizontalAlignment.Left);
             BuildSubstitutionTable();
             BuildFilterTable();
+            txtBoxIn.MaxLength = Int32.MaxValue;
+            txtBoxOut.MaxLength = Int32.MaxValue;
         }
 
         /// <summary>

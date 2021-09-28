@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace AffineCipherApp
@@ -295,23 +296,20 @@ namespace AffineCipherApp
         internal static string FormatAndEncryptOpenText(in string input)
         {
             var encrypted = new StringBuilder(capacity: 2000);
-            foreach (var c in input)
+            for (int i = 0; i < input.Length; ++i)
             {
-                if (ConversionDictionary.TryGetValue(c, out char newValue))
+                if (i % 6 == 0) encrypted.Append(" ");
+                if (ConversionDictionary.TryGetValue(input[i], out char newValue))
                 {
                     encrypted.Append(AffineCipherDictionary[newValue]);
                     continue;
                 }
 
-                if (!Char.IsWhiteSpace(c)) continue;
+                if (!Char.IsWhiteSpace(input[i])) continue;
                 AppendEncryptedWhiteSpace(ref encrypted);
             }
-            for (int i = 5; i < encrypted.Length; i += 6)
-            {
-                encrypted.Insert(i, " ");
-            }
 
-            return encrypted.ToString(); ;
+            return encrypted.ToString();
         }
 
         /// <summary>
