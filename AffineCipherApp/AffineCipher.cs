@@ -390,9 +390,8 @@ namespace AffineCipherApp
         /// <returns>Encrypted characters index to be used to instantiate encryption dictionary.</returns>
         private static int EncryptionMechanism(in int input, ref int a, ref int b, ref int m)
         {
-            int encryptedVal = a * input + Mod(ref b, ref m);
-            if (encryptedVal < m) return encryptedVal;
-            return encryptedVal % m;
+            int temp = a * input + b;
+            return Mod(ref temp, ref m);
         }
 
         /// <summary>
