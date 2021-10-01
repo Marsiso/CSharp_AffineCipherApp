@@ -419,7 +419,7 @@ namespace AffineCipherApp
         /// <returns>Decrypted characters index to be used to instantiate decryption dictionary.</returns>
         private static int DecryptionMechanism(in int input, ref int a, ref int b, ref int m)
         {
-            int temp = (input - b) * ModInverse(a, m);
+            int temp = (input - b) * a.ModInverse(m);
             return Mod(ref temp, ref m);
         }
 
@@ -429,31 +429,21 @@ namespace AffineCipherApp
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>Module's inversion.</returns>
-        private static int ModInverse(int left, int right)
+        private static int ModInverse(this int a, int m)
         {
-            int rightOriginal = right;
-            int y = 0, x = 1;
+            if (m == 1) return 0;
+            int m0 = m;
+            (int x, int y) = (1, 0);
 
-            if (right == 1)
-                return 0;
-
-            while (left > 1)
+            while (a > 1)
             {
-                int q = left / right;
-                int t = right;
-
-                right = left % right;
-                left = t;
-                t = y;
-
-                y = x - q * y;
-                x = t;
+                int q = a / m;
+                (a, m) = (m, a % m);
+                (x, y) = (y, x - q * y);
             }
-
-            if (x < 0)
-                x += rightOriginal;
-
-            return x;
+            return x < 0
+                ? x + m0
+                : x;
         }
     }
 }
