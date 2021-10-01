@@ -251,7 +251,7 @@ namespace AffineCipherApp
         }
 
         /// <summary>
-        /// Gets or sets chosen alphabet to be used.
+        /// Gets or sets chosen alphabet.
         /// </summary>
         internal static Dictionary<char, int> Instance
         {
@@ -312,7 +312,7 @@ namespace AffineCipherApp
         }
 
         /// <summary>
-        /// Builds dictionary used for an encryption of users input based on given parameters.
+        /// Builds dictionary used for an encryption of users input.
         /// </summary>
         /// <param name="a">Ax + b mod m</param>
         /// <param name="b">ax + B mod m</param>
@@ -330,7 +330,7 @@ namespace AffineCipherApp
         }
 
         /// <summary>
-        /// Builds dictionary used for an decryption of users input based on given parameters.
+        /// Builds dictionary used for a decryption of users input based.
         /// </summary>
         /// <param name="a">Ax + b mod m</param>
         /// <param name="b">ax + B mod m</param>
@@ -380,7 +380,7 @@ namespace AffineCipherApp
         }
 
         /// <summary>
-        /// Encrypts users input using affine cipher principles.
+        /// Encrypts users input using affine cipher.
         /// </summary>
         /// <param name="input">Users input in form of an index of a char to be encrypted.</param>
         /// <param name="a">Ax + b mod m</param>
@@ -408,7 +408,7 @@ namespace AffineCipherApp
         }
 
         /// <summary>
-        /// Decrypts users input using affine cipher principles.
+        /// Decrypts users input using affine cipher.
         /// </summary>
         /// <param name="input">Users input in form of an index of a char to be decrypted.</param>
         /// <param name="a">Ax + b mod m</param>
@@ -424,8 +424,6 @@ namespace AffineCipherApp
         /// <summary>
         /// Implementation of math's inverse module.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
         /// <returns>Module's inversion.</returns>
         private static int ModInverse(this int a, int m)
         {
