@@ -297,7 +297,7 @@ namespace AffineCipherApp
             var encrypted = new StringBuilder(capacity: 2000);
             for (int i = 0; i < input.Length; ++i)
             {
-                if (i % 6 == 0) encrypted.Append(" ");
+                if (i % 5 == 0) encrypted.Append(" ");
                 if (ConversionDictionary.TryGetValue(input[i], out char newValue))
                 {
                     encrypted.Append(AffineCipherDictionary[newValue]);
